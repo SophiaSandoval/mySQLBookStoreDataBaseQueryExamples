@@ -1,0 +1,128 @@
+ Query1: ""SELECT * FROM Publishers;"""
+ 
+RESULT = (1, 'WILLEY', 'WDT@VSNL.NET', '9112326087')
+        (2, 'WROX', 'INFO@WROX.COM', 'NULL')
+        (3, 'TATA MCGRAW-\nHILL', 'FEEDBACK@TATAMCGRAWHILL.COM', '9133333322')
+        (4, 'TECHMEDIA', 'BOOKS@TECHMEDIA.COM', '9133257660')
+
+ Query2 = """ CREATE TABLE customers(custID INT(5) NOT NULL, 
+                                    custName VARCHAR(30) NOT NULL,
+                                    zip INT(5) NULL, 
+                                    city VARCHAR(30) NULL, 
+                                    state VARCHAR(30) NULL,
+                                    PRIMARY KEY(custID)); """
+        
+RESULT = "Customers created successfully"
+Then I ran show tables;
++--------------------+
+| Tables_in_project2 |
++--------------------+
+| Authors            |
+| customers          |
+| Publishers         |
+| Subjects           |
+| TitleAuthors       |
+| Titles             |
++--------------------+
+
+
+Query 3:
+INSERT INTO Customers (custID, custName, zip, city, state)
+    VALUES (1, 'ABRAHAM SILBERSCHATZ', 92373, 'Redlands', 'CA'), 
+    (2, ' HENRY KORTH ', 92401, 'San Bernardino', 'CA')
+    (3, 'CALVIN HARRIS', 92341, 'Los Angeles', 'CA'), 
+    (4, 'MARTIN GARRIX', 95674, 'San Diego', 'CA'), 
+    (5,  'JAMES GOODWILL', 94372, 'San Francisco', 'CA');
+
+
+Result: "DATA INSERTED"
+THEN I RAN SELECT * from Customers; 
+which returned
+(1, 'ABRAHAM SILBERSCHATZ', 92373, 'Redlands', 'CA')
+(2, ' HENRY KORTH ', 92401, 'San Bernardino', 'CA')
+(3, 'CALVIN HARRIS', 92341, 'Los Angeles', 'CA')
+(4, 'MARTIN GARRIX', 95674, 'San Diego', 'CA')
+(5, 'JAMES GOODWILL', 94372, 'San Francisco', 'CA')
+Connection closed
+
+Query4
+"""SELECT authors.aName, COUNT(*) AS bookCount
+                    FROM authors
+                    JOIN titleauthors ON authors.auID = titleauthors.auID
+                    GROUP BY authors.aName
+                    ORDER BY bookCount DESC
+                    LIMIT 1;"""
+
+RESULT = ('DAVAID HUNTER', 2)
+
+
+Query5
+ """SELECT pname, title, price
+                    FROM publishers, titles
+                    WHERE publishers.pubID = titles.pubID;"""
+
+RESULT = ('WILLEY', 'MASTERING EJB', 385)
+        ('WROX', 'PRO. VB.NET', 365)
+        ('WROX', 'INTRO. VB.NET', 345)
+        ('TATA MCGRAW-\nHILL', 'ORACLE10G COMP. REF.', 466)
+        ('TATA MCGRAW-\nHILL', 'JAVA COMP. REF', 404)
+        ('TECHMEDIA', 'ASP.NET UNLEASHED', 437)
+
+
+Query6
+"""SELECT aName, title, price
+                    FROM authors, titles, titleAuthors, subjects
+                    WHERE authors.auID = titleAuthors.auID
+                    AND titleAuthors.titleID = titles.titleID
+                    AND titles.subID = subjects.subID
+                    AND subjects.sName LIKE '%Java%';"""
+
+RESULT = ('DAVAID HUNTER', 'JAVA COMP. REF', 404)
+            ('ED. ROMANS', 'MASTERING EJB', 385)
+
+Query7
+"""SELECT aName
+                    FROM authors, titles, titleAuthors
+                    WHERE authors.auID = titleAuthors.auID
+                    AND titleAuthors.titleID = titles.titleID
+                    AND titles.cover = 'PAPER BACK'
+                    and titles.price BETWEEN 475 and 500;
+                    """
+RESULT:('ED. ROMANS',)
+        ('DAVAID HUNTER',)
+
+Query8
+"""SELECT aName
+                    FROM authors, subjects, titles, titleAuthors
+                    WHERE authors.auID = titleAuthors.auID
+                    AND titleAuthors.titleID = titles.titleID
+                    AND titles.subID = subjects.subID
+                    AND subjects.sname = 'VISUAL BASIC.NET'
+                    AND subjects.sname != 'ORACLE DATABASE';
+                    """ 
+RESULT: ('JAMES GOODWILL',)
+        ('DAVAID HUNTER',)
+
+Query9
+"""SELECT aName
+                    FROM authors
+                    WHERE email LIKE '%gmail.com%' ;
+                    """ 
+RESULT: ('STEPHEN WALTHER',)
+
+Query10
+"""UPDATE titles
+                SET price = CASE 
+                WHEN 'pubDate' < '2003-01-01' THEN price * 0.75
+                 WHEN 'pubDate' > '2004-12-31' THEN price * 0.9
+                 ELSE price
+                END;
+                    """ 
+
+RESULT:
+(1001, 'ASP.NET UNLEASHED', 4, 'ASP', datetime.date(2002, 4, 2), 'HARD COVER', 486)
+(1002, 'ORACLE10G COMP. REF.', 3, 'ORA', datetime.date(2005, 5, 1), 'PAPER BACK', 518)
+(1003, 'MASTERING EJB', 1, 'JEE', datetime.date(2005, 2, 3), 'PAPER BACK', 428)
+(1004, 'JAVA COMP. REF', 3, 'JAVA', datetime.date(2005, 4, 3), 'PAPER BACK', 449)
+(1005, 'PRO. VB.NET', 2, 'VB', datetime.date(2005, 6, 15), 'HARD COVER', 405)
+(1006, 'INTRO. VB.NET', 2, 'VB', datetime.date(2002, 12, 2), 'PAPER BACK', 383)
